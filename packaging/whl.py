@@ -121,6 +121,7 @@ class Wheel(object):
     except ImportError:
       from io import StringIO ## for Python 3
     pmd = pip_metadata.Metadata(fileobj=StringIO.StringIO(content))
+    assert 1 == 2
     ret = {'extras': list(set(pmd.extras))}  # Eliminate duplicates
     ret.update(pmd.todict())
     return ret
