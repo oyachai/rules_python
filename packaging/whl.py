@@ -20,6 +20,8 @@ import pkg_resources
 import re
 import zipfile
 
+import pip._vendor.distlib.metadata as pip_metadata
+
 
 class Wheel(object):
 
@@ -112,8 +114,16 @@ class Wheel(object):
   # _parse_metadata parses METADATA files according to https://www.python.org/dev/peps/pep-0314/
   def _parse_metadata(self, content):
     # TODO: handle fields other than just name
-    name_pattern = re.compile('Name: (.*)')
-    return { 'name': name_pattern.search(content).group(1) }
+    # name_pattern = re.compile('Name: (.*)')
+    # return { 'name': name_pattern.search(content).group(1) }
+    try:
+      from StringIO import StringIO ## for Python 2
+    except ImportError:
+      from io import StringIO ## for Python 3
+    pmd = pip_metadata.Metadata(fileobj=StringIO.StringIO(content))
+    ret = {'extras': list(set(pmd.extras))}  # Eliminate duplicates
+    ret.update(pmd.todict())
+    return ret
 
 
 parser = argparse.ArgumentParser(
