@@ -22,6 +22,7 @@ py_library(
     name = "whl",
     srcs = ["whl.py"],
     deps = [
+        requirement("pip"),
         requirement("setuptools"),
     ],
 )
